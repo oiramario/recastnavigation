@@ -21,6 +21,7 @@
 
 #include "Recast.h"
 #include "SampleInterfaces.h"
+#include "DetourNavMesh.h"
 
 
 /// Tool types.
@@ -133,6 +134,7 @@ public:
 	virtual void handleRenderOverlay(double* proj, double* model, int* view);
 	virtual void handleMeshChanged(class InputGeom* geom);
 	virtual bool handleBuild();
+    virtual bool handleLoad();
 	virtual void handleUpdate(const float dt);
 
 	virtual class InputGeom* getInputGeom() { return m_geom; }
@@ -158,5 +160,19 @@ public:
 	void handleCommonSettings();
 };
 
+typedef unsigned int uint32;
+const uint32 MMAP_MAGIC = 0x4d4d4150; // 'MMAP'
+
+struct MmapTileHeader
+{
+    uint32 mmapMagic;
+    uint32 dtVersion;
+    uint32 mmapVersion;
+    uint32 size;
+    bool usesLiquids : 1;
+
+    MmapTileHeader() : mmapMagic(MMAP_MAGIC), dtVersion(DT_NAVMESH_VERSION),
+        mmapVersion(0), size(0), usesLiquids(true) { }
+};
 
 #endif // RECASTSAMPLE_H

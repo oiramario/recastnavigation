@@ -1204,3 +1204,114 @@ unsigned char* Sample_TileMesh::buildTileMesh(const int tx, const int ty, const 
 	dataSize = navDataSize;
 	return navData;
 }
+
+bool Sample_TileMesh::handleLoad()
+{
+    if (!m_geom || !m_geom->getMesh())
+    {
+        m_ctx->log(RC_LOG_ERROR, "buildNavigation: Input mesh is not specified.");
+        return false;
+    }
+
+    cleanup();
+
+    const char* meshFilePath = m_geom->getMesh()->getFileName();
+    char charBuff[4];
+    memset(charBuff, 0, sizeof(charBuff));
+    memcpy(charBuff, &meshFilePath[10], sizeof(char)* 3);
+    int mapId = atoi(charBuff);
+    // load and init dtNavMesh - read parameters from file
+    int pathLen = strlen("Meshes/%03i.mmap") + 1;
+    char *fileName = new char[pathLen];
+    snprintf(fileName, pathLen, "Meshes/%03i.mmap", mapId);
+    FILE* file = fopen(fileName, "rb");
+    if (!file)
+    {
+        delete[] fileName;
+        return false;
+    }
+    dtNavMeshParams params;
+    int count = fread(&params, sizeof(dtNavMeshParams), 1, file);
+    fclose(file);
+    if (count != 1)
+    {
+        delete[] fileName;
+        return false;
+    }
+    dtNavMesh* mesh = dtAllocNavMesh();
+    if (dtStatusFailed(mesh->init(&params)))
+    {
+        dtFreeNavMesh(mesh);
+        delete[] fileName;
+        return false;
+    }
+    delete[] fileName;
+
+    memset(charBuff, 0, sizeof(charBuff));
+    memcpy(charBuff, &meshFilePath[13], sizeof(char)* 2);
+    int x = atoi(charBuff);
+    memset(charBuff, 0, sizeof(charBuff));
+    memcpy(charBuff, &meshFilePath[15], sizeof(char)* 2);
+    int y = atoi(charBuff);
+
+    for (int row = -1; row <= 1; row++)
+    {
+        for (int col = -1; col <= 1; col++)
+        {
+            // load this tile :: Meshes/MMMXXYY.mmtile
+            pathLen = strlen("Meshes/%03i%02i%02i.mmtile") + 1;
+            fileName = new char[pathLen];
+            snprintf(fileName, pathLen, "Meshes/%03i%02i%02i.mmtile", mapId, x + row, y + col);
+
+            file = fopen(fileName, "rb");
+            if (!file)
+            {
+                delete[] fileName;
+                continue;
+            }
+            delete[] fileName;
+
+            // read header
+            MmapTileHeader fileHeader;
+            if (fread(&fileHeader, sizeof(MmapTileHeader), 1, file) != 1 || fileHeader.mmapMagic != MMAP_MAGIC)
+            {
+                fclose(file);
+                continue;
+            }
+
+            unsigned char* data = (unsigned char*)dtAlloc(fileHeader.size, DT_ALLOC_PERM);
+
+            size_t result = fread(data, fileHeader.size, 1, file);
+            if (!result)
+            {
+                fclose(file);
+                continue;
+            }
+
+            fclose(file);
+
+            dtTileRef tileRef = 0;
+
+            // memory allocated for data is now managed by detour, and will be deallocated when the tile is removed
+            if (!dtStatusSucceed(mesh->addTile(data, fileHeader.size, DT_TILE_FREE_DATA, 0, &tileRef)))
+            {
+                dtFree(data);
+                return false;
+            }
+        }
+    }
+
+    m_navMesh = mesh;
+    dtStatus status = m_navQuery->init(m_navMesh, 2048);
+    if (dtStatusFailed(status))
+    {
+        m_ctx->log(RC_LOG_ERROR, "Could not init Detour navmesh query");
+        return false;
+    }
+
+    if (m_tool)
+        m_tool->init(this);
+    initToolStates(this);
+
+    return true;
+}

@@ -32,7 +32,7 @@ inline unsigned int dtHashRef(dtPolyRef a)
 	a = a ^ (a >> 11);
 	a = a + (a << 6);
 	a = a ^ (a >> 22);
-	return (unsigned int)a;
+	return (unsigned int)(a & 0xFFFFFFFF);
 }
 #else
 inline unsigned int dtHashRef(dtPolyRef a)
