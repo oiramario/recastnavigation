@@ -133,8 +133,8 @@ static void addGfxCmdText(int x, int y, int align, const char* text, unsigned in
 	cmd.type = IMGUI_GFXCMD_TEXT;
 	cmd.flags = 0;
 	cmd.col = color;
-	cmd.text.x = (short)x;
-	cmd.text.y = (short)y;
+	cmd.text.x = (short)(x & 0xFFFF);
+    cmd.text.y = (short)(y & 0xFFFF);
 	cmd.text.align = (short)align;
 	cmd.text.text = allocText(text);
 }
