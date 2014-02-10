@@ -1249,7 +1249,10 @@ bool rcBuildRegions(rcContext* ctx, rcCompactHeightfield& chf,
 	memset(srcDist, 0, sizeof(unsigned short)*chf.spanCount);
 	
 	unsigned short regionId = 1;
-	unsigned short level = (chf.maxDistance+1) & ~1;
+
+    unsigned short level = 0xFFFF & ~1;
+    if (chf.maxDistance != 0xFFFF)
+        level = (chf.maxDistance + 1) & ~1;
 
 	// TODO: Figure better formula, expandIters defines how much the 
 	// watershed "overflows" and simplifies the regions. Tying it to
