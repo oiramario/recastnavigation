@@ -342,7 +342,7 @@ void Sample_TileMesh::handleSettings()
 		m_buildAll = !m_buildAll;
 	
 	imguiLabel("Tiling");
-	imguiSlider("TileSize", &m_tileSize, 16.0f, 1024.0f, 16.0f);
+	imguiSlider("TileSize", &m_tileSize, 10.0f, 1800.0f, 10.0f);
 	
 	if (m_geom)
 	{
