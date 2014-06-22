@@ -135,10 +135,35 @@ void Sample::resetCommonSettings()
 	m_detailSampleDist = 6.0f;
 	m_detailSampleMaxError = 1.0f;
 	m_partitionType = SAMPLE_PARTITION_WATERSHED;
+    m_trinityCoreValues = false;
 }
 
 void Sample::handleCommonSettings()
 {
+    if (imguiCheck("TrinityCore Configs", m_trinityCoreValues))
+    {
+        m_trinityCoreValues = !m_trinityCoreValues;
+        if (m_trinityCoreValues)
+        {
+            m_cellSize = 0.2666666f;
+            m_cellHeight = 0.2666666f;
+            m_agentHeight = 6 * m_cellSize;
+            m_agentRadius = 2 * m_cellSize;
+            m_agentMaxClimb = 8 * m_cellSize;
+            m_agentMaxSlope = 70.0f;
+            m_regionMinSize = 60;
+            m_regionMergeSize = 50;
+            m_edgeMaxLen = 81.0f;
+            m_edgeMaxError = 1.8f;
+            m_vertsPerPoly = 6.0f;
+            m_detailSampleDist = 64;
+            m_detailSampleMaxError = 2.0f;
+            m_partitionType = SAMPLE_PARTITION_WATERSHED;
+        }
+        else
+            resetCommonSettings();
+    }
+
 	imguiLabel("Rasterization");
 	imguiSlider("Cell Size", &m_cellSize, 0.1f, 1.0f, 0.01f);
 	imguiSlider("Cell Height", &m_cellHeight, 0.1f, 1.0f, 0.01f);
