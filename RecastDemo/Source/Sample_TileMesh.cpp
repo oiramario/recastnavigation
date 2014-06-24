@@ -347,10 +347,6 @@ void Sample_TileMesh::handleSettings()
     {
         m_tileSize = 80;
     }
-    else
-    {
-        m_tileSize = 32;
-    }
 
 	if (imguiCheck("Keep Itermediate Results", m_keepInterResults))
 		m_keepInterResults = !m_keepInterResults;
