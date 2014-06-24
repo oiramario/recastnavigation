@@ -21,6 +21,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
+#include <cstdlib>
 #include "Recast.h"
 #include "InputGeom.h"
 #include "ChunkyTriMesh.h"
@@ -142,7 +143,21 @@ bool InputGeom::loadMesh(rcContext* ctx, const char* filepath)
 		return false;
 	}
 
-	rcCalcBounds(m_mesh->getVerts(), m_mesh->getVertCount(), m_meshBMin, m_meshBMax);
+    char charBuff[3];
+    memset(charBuff, 0, sizeof(charBuff));
+    memcpy(charBuff, &filepath[13], sizeof(char) * 2);
+    int tileX = atoi(charBuff);
+    memset(charBuff, 0, sizeof(charBuff));
+    memcpy(charBuff, &filepath[15], sizeof(char) * 2);
+    int tileY = atoi(charBuff);
+
+    rcCalcBounds(m_mesh->getVerts(), m_mesh->getVertCount(), m_meshBMin, m_meshBMax);
+
+    // this is for width and depth
+    m_meshBMax[0] = (32 - int(tileX)) * 533.3333f;
+    m_meshBMax[2] = (32 - int(tileY)) * 533.3333f;
+    m_meshBMin[0] = m_meshBMax[0] - 533.3333f;
+    m_meshBMin[2] = m_meshBMax[2] - 533.3333f;
 
 	m_chunkyMesh = new rcChunkyTriMesh;
 	if (!m_chunkyMesh)

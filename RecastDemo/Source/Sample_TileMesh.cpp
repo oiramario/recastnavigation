@@ -343,6 +343,11 @@ void Sample_TileMesh::handleSettings()
 {
 	Sample::handleCommonSettings();
 
+    if (m_trinityCoreValues)
+    {
+        m_tileSize = 80;
+    }
+
 	if (imguiCheck("Keep Itermediate Results", m_keepInterResults))
 		m_keepInterResults = !m_keepInterResults;
 
