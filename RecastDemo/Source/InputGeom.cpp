@@ -146,10 +146,10 @@ bool InputGeom::loadMesh(rcContext* ctx, const char* filepath)
     char charBuff[3];
     memset(charBuff, 0, sizeof(charBuff));
     memcpy(charBuff, &filepath[13], sizeof(char) * 2);
-    int tileX = atoi(charBuff);
+    int tileY = atoi(charBuff);
     memset(charBuff, 0, sizeof(charBuff));
     memcpy(charBuff, &filepath[15], sizeof(char) * 2);
-    int tileY = atoi(charBuff);
+    int tileX = atoi(charBuff);
 
     rcCalcBounds(m_mesh->getVerts(), m_mesh->getVertCount(), m_meshBMin, m_meshBMax);
 
