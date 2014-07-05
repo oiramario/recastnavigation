@@ -618,6 +618,21 @@ int main(int /*argc*/, char** /*argv*/)
                     test = 0;
                 }
 
+                if (imguiButton("Load sub mmtile"))
+                {
+                    ctx.resetLog();
+                    if (!sample->handleLoadSubTiles())
+                    {
+                        showLog = true;
+                        logScroll = 0;
+                    }
+                    ctx.dumpLog("Load log %s:", meshName);
+
+                    // Clear test.
+                    delete test;
+                    test = 0;
+                }
+
 				imguiSeparator();
 			}
 			

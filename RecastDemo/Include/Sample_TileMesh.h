@@ -94,6 +94,7 @@ public:
 	virtual void handleMeshChanged(class InputGeom* geom);
 	virtual bool handleBuild();
     virtual bool handleLoad();
+    virtual bool handleLoadSubTiles();
 	
 	void getTilePos(const float* pos, int& tx, int& ty);
 	

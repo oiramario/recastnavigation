@@ -143,6 +143,7 @@ public:
 	virtual void handleMeshChanged(class InputGeom* geom);
 	virtual bool handleBuild();
     virtual bool handleLoad();
+    virtual bool handleLoadSubTiles() { return true; };
 	virtual void handleUpdate(const float dt);
 
 	virtual class InputGeom* getInputGeom() { return m_geom; }
