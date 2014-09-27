@@ -11,6 +11,8 @@ solution "recastnavigation"
 		"Debug",
 		"Release"
 	}
+	startproject "RecastDemo"
+	platforms { "x32", "x64" }
 	location (todir)
 
 	-- extra warnings, no exceptions or rtti
@@ -148,13 +150,14 @@ project "RecastDemo"
 	-- windows library cflags and libs
 	configuration { "windows" }
 		includedirs { "../RecastDemo/Contrib/SDL/include" }
-		libdirs { "../RecastDemo/Contrib/SDL/lib/x86" }
+		libdirs { "../RecastDemo/Contrib/SDL/lib/x64" }
 		links { 
 			"opengl32",
 			"glu32",
 			"sdlmain",
 			"sdl"
 		}
+		debugdir "Bin"
 
 	-- mac includes and libs
 	configuration { "macosx" }
