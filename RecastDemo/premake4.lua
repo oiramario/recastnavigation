@@ -12,7 +12,7 @@ solution "recastnavigation"
 		"Release"
 	}
 	startproject "RecastDemo"
-	platforms { "x32", "x64" }
+	platforms { "x64" }
 	location (todir)
 
 	-- extra warnings, no exceptions or rtti
