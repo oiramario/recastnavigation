@@ -164,6 +164,7 @@ int main(int /*argc*/, char** /*argv*/)
 	InputGeom* geom = 0;
 	Sample* sample = 0;
 	TestCase* test = 0;
+    bool trinityCoreSettings = false;
 
 	BuildContext ctx;
 	
@@ -186,6 +187,9 @@ int main(int /*argc*/, char** /*argv*/)
 		bool processHitTest = false;
 		bool processHitTestShift = false;
 		SDL_Event event;
+
+        if (sample)
+            trinityCoreSettings = sample->getTrinityCoreValues();
 		
 		while (SDL_PollEvent(&event))
 		{
@@ -227,7 +231,7 @@ int main(int /*argc*/, char** /*argv*/)
 					{
 						delete geom;
 						geom = new InputGeom;
-						if (!geom || !geom->load(&ctx, "geomset.txt"))
+                        if (!geom || !geom->load(&ctx, "geomset.txt", trinityCoreSettings))
 						{
 							delete geom;
 							geom = 0;
@@ -708,6 +712,8 @@ int main(int /*argc*/, char** /*argv*/)
 			imguiEndScrollArea();
 		}
 		
+
+
 		// Level selection dialog.
 		if (showLevels)
 		{
@@ -736,7 +742,7 @@ int main(int /*argc*/, char** /*argv*/)
 				strcat(path, meshName);
 				
 				geom = new InputGeom;
-				if (!geom || !geom->loadMesh(&ctx, path))
+                if (!geom || !geom->loadMesh(&ctx, path, trinityCoreSettings))
 				{
 					delete geom;
 					geom = 0;
@@ -844,7 +850,7 @@ int main(int /*argc*/, char** /*argv*/)
 					strcat(path, meshName);
 					
 					geom = new InputGeom;
-					if (!geom || !geom->loadMesh(&ctx, path))
+                    if (!geom || !geom->loadMesh(&ctx, path, trinityCoreSettings))
 					{
 						delete geom;
 						geom = 0;

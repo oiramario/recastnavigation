@@ -60,9 +60,9 @@ public:
 	InputGeom();
 	~InputGeom();
 	
-	bool loadMesh(class rcContext* ctx, const char* filepath);
+    bool loadMesh(class rcContext* ctx, const char* filepath, bool trinityCoreSettings);
 	
-	bool load(class rcContext* ctx, const char* filepath);
+	bool load(class rcContext* ctx, const char* filepath, bool trinityCoreSettings);
 	bool save(const char* filepath);
 	
 	/// Method to return static mesh data.

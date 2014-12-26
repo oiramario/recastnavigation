@@ -153,6 +153,7 @@ public:
 	virtual float getAgentRadius() { return m_agentRadius; }
 	virtual float getAgentHeight() { return m_agentHeight; }
 	virtual float getAgentClimb() { return m_agentMaxClimb; }
+    virtual bool getTrinityCoreValues() { return m_trinityCoreValues; }
 	virtual const float* getBoundsMin();
 	virtual const float* getBoundsMax();
 	

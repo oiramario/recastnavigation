@@ -162,6 +162,7 @@ void Sample::handleCommonSettings()
         }
         else
             resetCommonSettings();
+        m_ctx->log(RC_LOG_WARNING, "Reload the mesh to update the Bounding Box");
     }
 
 	imguiLabel("Rasterization");
