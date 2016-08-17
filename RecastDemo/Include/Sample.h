@@ -22,6 +22,7 @@
 #include "Recast.h"
 #include "SampleInterfaces.h"
 #include "DetourNavMesh.h"
+#include <cstdlib>
 
 
 /// Tool types.
