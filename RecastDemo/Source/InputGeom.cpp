@@ -196,6 +196,7 @@ bool InputGeom::load(rcContext* ctx, const char* filePath, bool trinityCoreSetti
 	fclose(fp);
 	if (readLen != 1)
 	{
+		delete[] buf;
 		return false;
 	}
 	
