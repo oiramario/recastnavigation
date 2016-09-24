@@ -5,8 +5,6 @@ Recast & Detour
 [![Travis (Linux) Build Status](https://travis-ci.org/recastnavigation/recastnavigation.svg?branch=master)](https://travis-ci.org/recastnavigation/recastnavigation)
 [![Appveyor (Windows) Build  Status](https://ci.appveyor.com/api/projects/status/20w84u25b3f8h179/branch/master?svg=true)](https://ci.appveyor.com/project/recastnavigation/recastnavigation/branch/master)
 
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/memononen/recastnavigation/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
 ![screenshot of a navmesh baked with the sample program](/RecastDemo/screenshot.png?raw=true)
 
 ## Recast
@@ -63,6 +61,12 @@ RecastDemo uses [premake5](http://premake.github.io/) to build platform specific
 - Grab the latest SDL2 development library release from [here](https://www.libsdl.org/download-2.0.php) and unzip it `RecastDemo\Contrib`.  Rename the SDL folder such that the path `RecastDemo\Contrib\SDL\lib\x86` is valid.
 - Run `"premake5" vs2015` from the `RecastDemo` folder
 - Open the solution, build, and run.
+
+### Running Unit tests
+
+- Follow the instructions to build RecastDemo above.  Premake should generate another build target called "Tests".
+- Build the "Tests" project.  This will generate an executable named "Tests" in `RecastDemo/Bin/`
+- Run the "Tests" executable.  It will execute all the unit tests, indicate those that failed, and display a count of those that succeeded.
 
 ## Integrating with your own project
 
