@@ -1306,7 +1306,7 @@ bool Sample_TileMesh::handleLoad()
 
     cleanup();
 
-    const char* meshFilePath = m_geom->getMesh()->getFileName();
+    const std::string& meshFilePath = m_geom->getMesh()->getFileName();
     char charBuff[4];
     memset(charBuff, 0, sizeof(charBuff));
     memcpy(charBuff, &meshFilePath[10], sizeof(char)* 3);
@@ -1417,7 +1417,7 @@ bool Sample_TileMesh::handleLoadSubTiles()
 
     cleanup();
 
-    const char* meshFilePath = m_geom->getMesh()->getFileName();
+    const std::string& meshFilePath = m_geom->getMesh()->getFileName();
     char charBuff[4];
     memset(charBuff, 0, sizeof(charBuff));
     memcpy(charBuff, &meshFilePath[10], sizeof(char) * 3);

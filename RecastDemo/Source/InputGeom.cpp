@@ -178,7 +178,7 @@ bool InputGeom::loadMesh(rcContext* ctx, const std::string& filepath, bool trini
 	return true;
 }
 
-bool InputGeom::loadGeomSet(rcContext* ctx, const std::string& filepath, bool trinityCoreSettings)
+bool InputGeom::load(rcContext* ctx, const std::string& filepath, bool trinityCoreSettings)
 {
 	char* buf = 0;
 	FILE* fp = fopen(filepath.c_str(), "rb");
@@ -294,23 +294,6 @@ bool InputGeom::loadGeomSet(rcContext* ctx, const std::string& filepath, bool tr
 	delete [] buf;
 	
 	return true;
-}
-
-bool InputGeom::load(rcContext* ctx, const std::string& filepath)
-{
-	size_t extensionPos = filepath.find_last_of('.');
-	if (extensionPos == std::string::npos)
-		return false;
-
-	std::string extension = filepath.substr(extensionPos);
-	std::transform(extension.begin(), extension.end(), extension.begin(), tolower);
-
-	if (extension == ".gset")
-		return loadGeomSet(ctx, filepath);
-	if (extension == ".obj")
-		return loadMesh(ctx, filepath);
-
-	return false;
 }
 
 bool InputGeom::saveGeomSet(const BuildSettings* settings)

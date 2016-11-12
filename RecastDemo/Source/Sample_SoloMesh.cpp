@@ -745,7 +745,7 @@ bool Sample_SoloMesh::handleLoad()
 
     cleanup();
 
-    const char* meshFilePath = m_geom->getMesh()->getFileName();
+    const std::string& meshFilePath = m_geom->getMesh()->getFileName();
     char charBuff[4];
     memset(charBuff, 0, sizeof(charBuff));
     memcpy(charBuff, &meshFilePath[10], sizeof(char)* 3);
