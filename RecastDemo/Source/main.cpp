@@ -727,7 +727,7 @@ int main(int /*argc*/, char** /*argv*/)
 				string path = meshesFolder + "/" + meshName;
 				
 				geom = new InputGeom;
-				if (!geom->load(&ctx, path, trinityCoreSettings))
+				if (!geom->loadMesh(&ctx, path, trinityCoreSettings))
 				{
 					delete geom;
 					geom = 0;
