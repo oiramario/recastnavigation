@@ -146,6 +146,7 @@ public:
     virtual bool handleLoad();
     virtual bool handleLoadSubTiles() { return true; };
 	virtual void handleUpdate(const float dt);
+	virtual void collectSettings(struct BuildSettings& settings);
 
 	virtual class InputGeom* getInputGeom() { return m_geom; }
 	virtual class dtNavMesh* getNavMesh() { return m_navMesh; }
@@ -155,11 +156,9 @@ public:
 	virtual float getAgentHeight() { return m_agentHeight; }
 	virtual float getAgentClimb() { return m_agentMaxClimb; }
     virtual bool getTrinityCoreValues() { return m_trinityCoreValues; }
-	virtual const float* getBoundsMin();
-	virtual const float* getBoundsMax();
 	
-	inline unsigned char getNavMeshDrawFlags() const { return m_navMeshDrawFlags; }
-	inline void setNavMeshDrawFlags(unsigned char flags) { m_navMeshDrawFlags = flags; }
+	unsigned char getNavMeshDrawFlags() const { return m_navMeshDrawFlags; }
+	void setNavMeshDrawFlags(unsigned char flags) { m_navMeshDrawFlags = flags; }
 
 	void updateToolStates(const float dt);
 	void initToolStates(Sample* sample);
@@ -169,6 +168,11 @@ public:
 
 	void resetCommonSettings();
 	void handleCommonSettings();
+
+private:
+	// Explicitly disabled copy constructor and copy assignment operator.
+	Sample(const Sample&);
+	Sample& operator=(const Sample&);
 };
 
 typedef unsigned int uint32;

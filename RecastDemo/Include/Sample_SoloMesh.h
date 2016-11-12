@@ -76,6 +76,11 @@ public:
 	virtual void handleMeshChanged(class InputGeom* geom);
 	virtual bool handleBuild();
     virtual bool handleLoad();
+
+private:
+	// Explicitly disabled copy constructor and copy assignment operator.
+	Sample_SoloMesh(const Sample_SoloMesh&);
+	Sample_SoloMesh& operator=(const Sample_SoloMesh&);
 };
 
 

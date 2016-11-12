@@ -69,8 +69,8 @@ protected:
 	float m_tileSize;
 	
 	unsigned int m_tileCol;
-	float m_tileBmin[3];
-	float m_tileBmax[3];
+	float m_lastBuiltTileBmin[3];
+	float m_lastBuiltTileBmax[3];
 	float m_tileBuildTime;
 	float m_tileMemUsage;
 	int m_tileTriCount;
@@ -95,6 +95,7 @@ public:
 	virtual bool handleBuild();
     virtual bool handleLoad();
     virtual bool handleLoadSubTiles();
+	virtual void collectSettings(struct BuildSettings& settings);
 	
 	void getTilePos(const float* pos, int& tx, int& ty);
 	
@@ -102,6 +103,11 @@ public:
 	void removeTile(const float* pos);
 	void buildAllTiles();
 	void removeAllTiles();
+
+private:
+	// Explicitly disabled copy constructor and copy assignment operator.
+	Sample_TileMesh(const Sample_TileMesh&);
+	Sample_TileMesh& operator=(const Sample_TileMesh&);
 };
 
 

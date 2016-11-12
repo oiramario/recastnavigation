@@ -19,6 +19,8 @@
 #ifndef RECASTALLOC_H
 #define RECASTALLOC_H
 
+#include <stddef.h>
+
 /// Provides hint values to the memory allocator on how long the
 /// memory is expected to be used.
 enum rcAllocHint
@@ -32,7 +34,7 @@ enum rcAllocHint
 //  @param[in]		rcAllocHint	A hint to the allocator on how long the memory is expected to be in use.
 //  @return A pointer to the beginning of the allocated memory block, or null if the allocation failed.
 ///  @see rcAllocSetCustom
-typedef void* (rcAllocFunc)(int size, rcAllocHint hint);
+typedef void* (rcAllocFunc)(size_t size, rcAllocHint hint);
 
 /// A memory deallocation function.
 ///  @param[in]		ptr		A pointer to a memory block previously allocated using #rcAllocFunc.
@@ -49,7 +51,7 @@ void rcAllocSetCustom(rcAllocFunc *allocFunc, rcFreeFunc *freeFunc);
 ///  @param[in]		hint	A hint to the allocator on how long the memory is expected to be in use.
 ///  @return A pointer to the beginning of the allocated memory block, or null if the allocation failed.
 /// @see rcFree
-void* rcAlloc(int size, rcAllocHint hint);
+void* rcAlloc(size_t size, rcAllocHint hint);
 
 /// Deallocates a memory block.
 ///  @param[in]		ptr		A pointer to a memory block previously allocated using #rcAlloc.
@@ -62,12 +64,14 @@ class rcIntArray
 {
 	int* m_data;
 	int m_size, m_cap;
-	inline rcIntArray(const rcIntArray&);
-	inline rcIntArray& operator=(const rcIntArray&);
 
 	void doResize(int n);
-public:
+	
+	// Explicitly disabled copy constructor and copy assignment operator.
+	rcIntArray(const rcIntArray&);
+	rcIntArray& operator=(const rcIntArray&);
 
+public:
 	/// Constructs an instance with an initial array size of zero.
 	rcIntArray() : m_data(0), m_size(0), m_cap(0) {}
 
@@ -133,6 +137,11 @@ public:
 	/// The root array pointer.
 	///  @return The root array pointer.
 	inline operator T*() { return ptr; }
+	
+private:
+	// Explicitly disabled copy constructor and copy assignment operator.
+	rcScopedDelete(const rcScopedDelete&);
+	rcScopedDelete& operator=(const rcScopedDelete&);
 };
 
 #endif
