@@ -66,7 +66,6 @@ static SampleItem g_samples[] =
 	{ createSolo, "Solo Mesh" },
 	{ createTile, "Tile Mesh" },
 	{ createTempObstacle, "Temp Obstacles" },
-//	{ createDebug, "Debug" },
 };
 static const int g_nsamples = sizeof(g_samples) / sizeof(SampleItem);
 
@@ -145,7 +144,7 @@ int main(int /*argc*/, char** /*argv*/)
 	float camr = 1000;
 	float origCameraEulers[] = {0, 0}; // Used to compute rotational changes across frames.
 	
-	float moveW = 0, moveS = 0, moveA = 0, moveD = 0;
+	float moveFront = 0.0f, moveBack = 0.0f, moveLeft = 0.0f, moveRight = 0.0f, moveUp = 0.0f, moveDown = 0.0f;
 	
 	float scrollZoom = 0;
 	bool rotate = false;
@@ -461,10 +460,12 @@ int main(int /*argc*/, char** /*argv*/)
 		
 		// Handle keyboard movement.
 		const Uint8* keystate = SDL_GetKeyboardState(NULL);
-		moveW = rcClamp(moveW + dt * 4 * (keystate[SDL_SCANCODE_W] ? 1 : -1), 0.0f, 1.0f);
-		moveA = rcClamp(moveA + dt * 4 * (keystate[SDL_SCANCODE_A] ? 1 : -1), 0.0f, 1.0f);
-		moveS = rcClamp(moveS + dt * 4 * (keystate[SDL_SCANCODE_S] ? 1 : -1), 0.0f, 1.0f);
-		moveD = rcClamp(moveD + dt * 4 * (keystate[SDL_SCANCODE_D] ? 1 : -1), 0.0f, 1.0f);
+		moveFront	= rcClamp(moveFront	+ dt * 4 * ((keystate[SDL_SCANCODE_W] || keystate[SDL_SCANCODE_UP		]) ? 1 : -1), 0.0f, 1.0f);
+		moveLeft	= rcClamp(moveLeft	+ dt * 4 * ((keystate[SDL_SCANCODE_A] || keystate[SDL_SCANCODE_LEFT		]) ? 1 : -1), 0.0f, 1.0f);
+		moveBack	= rcClamp(moveBack	+ dt * 4 * ((keystate[SDL_SCANCODE_S] || keystate[SDL_SCANCODE_DOWN		]) ? 1 : -1), 0.0f, 1.0f);
+		moveRight	= rcClamp(moveRight	+ dt * 4 * ((keystate[SDL_SCANCODE_D] || keystate[SDL_SCANCODE_RIGHT	]) ? 1 : -1), 0.0f, 1.0f);
+		moveUp		= rcClamp(moveUp	+ dt * 4 * ((keystate[SDL_SCANCODE_Q] || keystate[SDL_SCANCODE_PAGEUP	]) ? 1 : -1), 0.0f, 1.0f);
+		moveDown	= rcClamp(moveDown	+ dt * 4 * ((keystate[SDL_SCANCODE_E] || keystate[SDL_SCANCODE_PAGEDOWN	]) ? 1 : -1), 0.0f, 1.0f);
 		
 		float keybSpeed = 22.0f;
 		if (SDL_GetModState() & KMOD_SHIFT)
@@ -472,8 +473,8 @@ int main(int /*argc*/, char** /*argv*/)
 			keybSpeed *= 20.0f;
 		}
 		
-		float movex = (moveD - moveA) * keybSpeed * dt;
-		float movey = (moveS - moveW) * keybSpeed * dt + scrollZoom * 2.0f;
+		float movex = (moveRight - moveLeft) * keybSpeed * dt;
+		float movey = (moveBack - moveFront) * keybSpeed * dt + scrollZoom * 2.0f;
 		scrollZoom = 0;
 		
 		cameraPos[0] += movex * (float)modelviewMatrix[0];
@@ -483,6 +484,8 @@ int main(int /*argc*/, char** /*argv*/)
 		cameraPos[0] += movey * (float)modelviewMatrix[2];
 		cameraPos[1] += movey * (float)modelviewMatrix[6];
 		cameraPos[2] += movey * (float)modelviewMatrix[10];
+
+		cameraPos[1] += (moveUp - moveDown) * keybSpeed * dt;
 
 		glEnable(GL_FOG);
 
@@ -660,7 +663,7 @@ int main(int /*argc*/, char** /*argv*/)
 				delete sample;
 				sample = newSample;
 				sample->setContext(&ctx);
-				if (geom && sample)
+				if (geom)
 				{
 					sample->handleMeshChanged(geom);
 				}
@@ -731,6 +734,13 @@ int main(int /*argc*/, char** /*argv*/)
 				{
 					delete geom;
 					geom = 0;
+
+					// Destroy the sample if it already had geometry loaded, as we've just deleted it!
+					if (sample && sample->getInputGeom())
+					{
+						delete sample;
+						sample = 0;
+					}
 					
 					showLog = true;
 					logScroll = 0;
@@ -814,10 +824,12 @@ int main(int /*argc*/, char** /*argv*/)
 								sampleName = g_samples[i].name;
 						}
 					}
-					if (newSample)
+
+					delete sample;
+					sample = newSample;
+
+					if (sample)
 					{
-						delete sample;
-						sample = newSample;
 						sample->setContext(&ctx);
 						showSample = false;
 					}
@@ -825,16 +837,17 @@ int main(int /*argc*/, char** /*argv*/)
 					// Load geom.
 					meshName = test->getGeomFileName();
 					
-					delete geom;
-					geom = 0;
 					
 					path = meshesFolder + "/" + meshName;
 					
+					delete geom;
 					geom = new InputGeom;
 					if (!geom || !geom->load(&ctx, path, trinityCoreSettings))
 					{
 						delete geom;
 						geom = 0;
+						delete sample;
+						sample = 0;
 						showLog = true;
 						logScroll = 0;
 						ctx.dumpLog("Geom load log %s:", meshName.c_str());

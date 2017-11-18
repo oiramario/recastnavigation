@@ -37,8 +37,14 @@ solution "recastnavigation"
 
 	-- windows specific
 	configuration "windows"
-		defines { "WIN32", "_WINDOWS", "_CRT_SECURE_NO_WARNINGS" }
+		defines { "WIN32", "_WINDOWS", "_CRT_SECURE_NO_WARNINGS", "_HAS_EXCEPTIONS=0" }
 
+	-- linux specific
+	configuration { "linux", "gmake" }
+		buildoptions {
+			"-Wall",
+			"-Werror"
+		}
 
 project "DebugUtils"
 	language "C++"
@@ -198,6 +204,8 @@ project "Tests"
 		"../Tests/*.cpp",
 		"../Tests/Recast/*.h",
 		"../Tests/Recast/*.cpp",
+		"../Tests/Detour/*.h",
+		"../Tests/Detour/*.cpp",
 	}
 
 	-- project dependencies
@@ -217,7 +225,8 @@ project "Tests"
 		buildoptions { 
 			"`pkg-config --cflags sdl2`",
 			"`pkg-config --cflags gl`",
-			"`pkg-config --cflags glu`" 
+			"`pkg-config --cflags glu`",
+			"-Wno-parentheses" -- Disable parentheses warning for the Tests target, as Catch's macros generate this everywhere.
 		}
 		linkoptions { 
 			"`pkg-config --libs sdl2`",

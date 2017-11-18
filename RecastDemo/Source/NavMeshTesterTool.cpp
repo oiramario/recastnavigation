@@ -45,7 +45,7 @@
 // Uncomment this to dump all the requests in stdout.
 #define DUMP_REQS
 
-// Returns a random number [0..1)
+// Returns a random number [0..1]
 static float frand()
 {
 //	return ((float)(rand() & 0xffff)/(float)0xffff);
@@ -233,6 +233,7 @@ NavMeshTesterTool::NavMeshTesterTool() :
 	m_sposSet(false),
 	m_eposSet(false),
 	m_pathIterNum(0),
+	m_pathIterPolyCount(0),
 	m_steerPointCount(0)
 {
 	m_filter.setIncludeFlags(SAMPLE_POLYFLAGS_ALL ^ SAMPLE_POLYFLAGS_DISABLED);
@@ -1039,7 +1040,7 @@ static void getPolyCenter(dtNavMesh* navMesh, dtPolyRef ref, float* center)
 
 void NavMeshTesterTool::handleRender()
 {
-	DebugDrawGL dd;
+	duDebugDraw& dd = m_sample->getDebugDraw();
 	
 	static const unsigned int startCol = duRGBA(128,25,0,192);
 	static const unsigned int endCol = duRGBA(51,102,0,129);
@@ -1396,7 +1397,7 @@ void NavMeshTesterTool::handleRenderOverlay(double* proj, double* model, int* vi
 
 void NavMeshTesterTool::drawAgent(const float* pos, float r, float h, float c, const unsigned int col)
 {
-	DebugDrawGL dd;
+	duDebugDraw& dd = m_sample->getDebugDraw();
 	
 	dd.depthMask(false);
 	
