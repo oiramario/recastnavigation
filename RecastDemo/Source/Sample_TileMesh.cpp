@@ -834,6 +834,26 @@ unsigned char* Sample_TileMesh::buildTileMesh(const int tx, const int ty, const 
 	m_cfg.height = m_cfg.tileSize + m_cfg.borderSize*2;
 	m_cfg.detailSampleDist = m_detailSampleDist < 0.9f ? 0 : m_cellSize * m_detailSampleDist;
 	m_cfg.detailSampleMaxError = m_cellHeight * m_detailSampleMaxError;
+
+	m_ctx->log(RC_LOG_PROGRESS, "Settings:");
+	m_ctx->log(RC_LOG_PROGRESS, " - m_cfg.cs %f", m_cfg.cs);
+	m_ctx->log(RC_LOG_PROGRESS, " - m_cfg.ch %f", m_cfg.ch);
+	m_ctx->log(RC_LOG_PROGRESS, " - m_cfg.walkableSlopeAngle %f", m_cfg.walkableSlopeAngle);
+	m_ctx->log(RC_LOG_PROGRESS, " - m_cfg.walkableHeight %d", m_cfg.walkableHeight);
+	m_ctx->log(RC_LOG_PROGRESS, " - m_cfg.walkableClimb %d", m_cfg.walkableClimb);
+	m_ctx->log(RC_LOG_PROGRESS, " - m_cfg.walkableRadius %d", m_cfg.walkableRadius);
+	m_ctx->log(RC_LOG_PROGRESS, " - m_cfg.maxEdgeLen %d", m_cfg.maxEdgeLen);
+	m_ctx->log(RC_LOG_PROGRESS, " - m_cfg.maxSimplificationError %f", m_cfg.maxSimplificationError);
+	m_ctx->log(RC_LOG_PROGRESS, " - m_cfg.minRegionArea %d", m_cfg.minRegionArea);
+	m_ctx->log(RC_LOG_PROGRESS, " - m_cfg.mergeRegionArea %d", m_cfg.mergeRegionArea);
+	m_ctx->log(RC_LOG_PROGRESS, " - m_cfg.maxVertsPerPoly %d", m_cfg.maxVertsPerPoly);
+	m_ctx->log(RC_LOG_PROGRESS, " - m_cfg.tileSize %d", m_cfg.tileSize);
+	m_ctx->log(RC_LOG_PROGRESS, " - m_cfg.borderSize %d", m_cfg.borderSize);
+	m_ctx->log(RC_LOG_PROGRESS, " - m_cfg.width %d", m_cfg.width);
+	m_ctx->log(RC_LOG_PROGRESS, " - m_cfg.height %d", m_cfg.height);
+	m_ctx->log(RC_LOG_PROGRESS, " - m_cfg.detailSampleDist %f", m_cfg.detailSampleDist);
+	m_ctx->log(RC_LOG_PROGRESS, " - m_cfg.detailSampleMaxError %f", m_cfg.detailSampleMaxError);
+
 	
 	// Expand the heighfield bounding box by border size to find the extents of geometry we need to build this tile.
 	//
