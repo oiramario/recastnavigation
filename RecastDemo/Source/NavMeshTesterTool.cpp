@@ -463,6 +463,26 @@ void NavMeshTesterTool::handleMenu()
 	imguiUnindent();
 
 	imguiSeparator();	
+
+	if (imguiButton("Set Hardcoded Start And End"))
+	{
+		float startXYZ[3] = { 5825.4165f, 649.498962f, 609.336792f };
+		float endXYZ[3] = { 5819.81982f, 643.027893f, 609.885925f };
+
+		m_spos[0] = startXYZ[1];
+		m_spos[1] = startXYZ[2];
+		m_spos[2] = startXYZ[0];
+
+		m_epos[0] = endXYZ[1];
+		m_epos[1] = endXYZ[2];
+		m_epos[2] = endXYZ[0];
+
+		m_sposSet = true;
+		m_eposSet = true;
+		recalc();
+	}
+
+	imguiSeparator();
 }
 
 void NavMeshTesterTool::handleClick(const float* /*s*/, const float* p, bool shift)
