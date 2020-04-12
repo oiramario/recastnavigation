@@ -765,14 +765,17 @@ bool Sample_SoloMesh::handleLoad()
     cleanup();
 
     const std::string& meshFilePath = m_geom->getMesh()->getFileName();
-    char charBuff[4];
+    int mapIdStart = strlen("Meshes/map");
+    int mapIdEnd = meshFilePath.length() - 3 /*extension*/ - 1 /*dot*/ - 4 /*XXYY coords*/;
+    int mapIdLength = mapIdEnd - mapIdStart;
+    char charBuff[5];
     memset(charBuff, 0, sizeof(charBuff));
-    memcpy(charBuff, &meshFilePath[10], sizeof(char)* 3);
+    std::copy(&meshFilePath[mapIdStart], &meshFilePath[mapIdEnd], &charBuff[0]);
     int mapId = atoi(charBuff);
     // load and init dtNavMesh - read parameters from file
-    int pathLen = strlen("Meshes/%03i.mmap") + 1;
+    int pathLen = strlen("Meshes/.mmap") + 1 + mapIdLength;
     char *fileName = new char[pathLen];
-    snprintf(fileName, pathLen, "Meshes/%03i.mmap", mapId);
+    snprintf(fileName, pathLen, "Meshes/%0*i.mmap", mapIdLength, mapId);
     FILE* file = fopen(fileName, "rb");
     if (!file)
     {
@@ -797,16 +800,16 @@ bool Sample_SoloMesh::handleLoad()
     delete[] fileName;
 
     memset(charBuff, 0, sizeof(charBuff));
-    memcpy(charBuff, &meshFilePath[13], sizeof(char)* 2);
+    std::copy_n(&meshFilePath[mapIdEnd], sizeof(char) * 2, &charBuff[0]);
     int x = atoi(charBuff);
     memset(charBuff, 0, sizeof(charBuff));
-    memcpy(charBuff, &meshFilePath[15], sizeof(char)* 2);
+    std::copy_n(&meshFilePath[mapIdEnd + 2], sizeof(char) * 2, &charBuff[0]);
     int y = atoi(charBuff);
 
     // load this tile :: Meshes/MMMXXYY.mmtile
-    pathLen = strlen("Meshes/%03i%02i%02i.mmtile") + 1;
+    pathLen = strlen("Meshes/XXYY.mmtile") + 1 + mapIdLength;
     fileName = new char[pathLen];
-    snprintf(fileName, pathLen, "Meshes/%03i%02i%02i.mmtile", mapId, x, y);
+    snprintf(fileName, pathLen, "Meshes/%0*i%02i%02i.mmtile", mapIdLength, mapId, x, y);
 
     file = fopen(fileName, "rb");
     if (!file)
