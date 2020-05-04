@@ -745,7 +745,7 @@ void NavMeshTesterTool::recalc()
 				m_navQuery->closestPointOnPoly(m_startRef, m_spos, iterPos, 0);
 				m_navQuery->closestPointOnPoly(polys[npolys-1], m_epos, targetPos, 0);
 				
-				static const float STEP_SIZE = 0.5f;
+				static const float STEP_SIZE = 4.0f;
 				static const float SLOP = 0.01f;
 				
 				m_nsmoothPath = 0;
@@ -942,14 +942,15 @@ void NavMeshTesterTool::recalc()
 			{
 				// Hit
 				dtVlerp(m_hitPos, m_spos, m_epos, t);
+				m_hitPos[1] = m_spos[1];
 				m_hitResult = true;
 			}
 			// Adjust height.
 			if (m_npolys > 0)
 			{
 				float h = 0;
-				m_navQuery->getPolyHeight(m_polys[m_npolys-1], m_hitPos, &h);
-				m_hitPos[1] = h;
+				if (!dtStatusFailed(m_navQuery->getPolyHeight(m_polys[m_npolys - 1], m_hitPos, &h)))
+					m_hitPos[1] = h;
 			}
 			dtVcopy(&m_straightPath[3], m_hitPos);
 		}
