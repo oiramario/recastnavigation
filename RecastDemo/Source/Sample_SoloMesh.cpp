@@ -394,6 +394,7 @@ bool Sample_SoloMesh::handleBuild()
 	m_cfg.cs = m_cellSize;
 	m_cfg.ch = m_cellHeight;
 	m_cfg.walkableSlopeAngle = m_agentMaxSlope;
+	m_cfg.walkableSlopeAngleNotSteep = m_agentMaxSlopeNotSteep;
 	m_cfg.walkableHeight = (int)ceilf(m_agentHeight / m_cfg.ch);
 	m_cfg.walkableClimb = (int)floorf(m_agentMaxClimb / m_cfg.ch);
 	m_cfg.walkableRadius = (int)ceilf(m_agentRadius / m_cfg.cs);
@@ -659,8 +660,14 @@ bool Sample_SoloMesh::handleBuild()
 		{
 			if (m_pmesh->areas[i] == RC_WALKABLE_AREA)
 				m_pmesh->areas[i] = SAMPLE_POLYAREA_GROUND;
+			else if (m_pmesh->areas[i] == RC_WALKABLE_AREA_STEEP)
+				m_pmesh->areas[i] = SAMPLE_POLYAREA_GROUND_STEEP;
 				
-			if (m_pmesh->areas[i] == SAMPLE_POLYAREA_GROUND ||
+			if (m_pmesh->areas[i] == SAMPLE_POLYAREA_GROUND_STEEP)
+			{
+				m_pmesh->flags[i] = SAMPLE_POLYFLAGS_WALK_STEEP;
+			}
+			else if (m_pmesh->areas[i] == SAMPLE_POLYAREA_GROUND ||
 				m_pmesh->areas[i] == SAMPLE_POLYAREA_GRASS ||
 				m_pmesh->areas[i] == SAMPLE_POLYAREA_ROAD)
 			{

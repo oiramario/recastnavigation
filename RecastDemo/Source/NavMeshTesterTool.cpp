@@ -257,6 +257,7 @@ void NavMeshTesterTool::init(Sample* sample)
 	if (m_navQuery)
 	{
 		// Change costs.
+		m_filter.setAreaCost(SAMPLE_POLYAREA_GROUND_STEEP, 1.0f);
 		m_filter.setAreaCost(SAMPLE_POLYAREA_GROUND, 1.0f);
 		m_filter.setAreaCost(SAMPLE_POLYAREA_WATER, 10.0f);
 		m_filter.setAreaCost(SAMPLE_POLYAREA_ROAD, 1.0f);
@@ -414,6 +415,11 @@ void NavMeshTesterTool::handleMenu()
 	imguiLabel("Include Flags");
 
 	imguiIndent();
+	if (imguiCheck("Walk Steep", (m_filter.getIncludeFlags() & SAMPLE_POLYFLAGS_WALK_STEEP) != 0))
+	{
+		m_filter.setIncludeFlags(m_filter.getIncludeFlags() ^ SAMPLE_POLYFLAGS_WALK_STEEP);
+		recalc();
+	}
 	if (imguiCheck("Walk", (m_filter.getIncludeFlags() & SAMPLE_POLYFLAGS_WALK) != 0))
 	{
 		m_filter.setIncludeFlags(m_filter.getIncludeFlags() ^ SAMPLE_POLYFLAGS_WALK);
@@ -440,6 +446,11 @@ void NavMeshTesterTool::handleMenu()
 	imguiLabel("Exclude Flags");
 	
 	imguiIndent();
+	if (imguiCheck("Walk Steep", (m_filter.getExcludeFlags() & SAMPLE_POLYFLAGS_WALK_STEEP) != 0))
+	{
+		m_filter.setExcludeFlags(m_filter.getExcludeFlags() ^ SAMPLE_POLYFLAGS_WALK_STEEP);
+		recalc();
+	}
 	if (imguiCheck("Walk", (m_filter.getExcludeFlags() & SAMPLE_POLYFLAGS_WALK) != 0))
 	{
 		m_filter.setExcludeFlags(m_filter.getExcludeFlags() ^ SAMPLE_POLYFLAGS_WALK);

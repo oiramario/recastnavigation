@@ -44,9 +44,10 @@ enum SampleToolType
 /// The use should specify these base on his needs.
 enum SamplePolyAreas
 {
-	SAMPLE_POLYAREA_GROUND = 63,
-	SAMPLE_POLYAREA_WATER = 62,
-	SAMPLE_POLYAREA_ROAD = 61,
+	SAMPLE_POLYAREA_GROUND = 62,
+	SAMPLE_POLYAREA_WATER = 61,
+	SAMPLE_POLYAREA_ROAD = 60,
+	SAMPLE_POLYAREA_GROUND_STEEP = 63,
 	SAMPLE_POLYAREA_DOOR = 10,
 	SAMPLE_POLYAREA_GRASS,
 	SAMPLE_POLYAREA_JUMP,
@@ -56,8 +57,9 @@ enum SamplePolyFlags
 	SAMPLE_POLYFLAGS_WALK		= 0x01,		// Ability to walk (ground, grass, road)
 	SAMPLE_POLYFLAGS_SWIM		= 0x02,		// Ability to swim (water).
 	SAMPLE_POLYFLAGS_DOOR		= 0x04,		// Ability to move through doors.
-	SAMPLE_POLYFLAGS_JUMP		= 0x08,		// Ability to jump.
-	SAMPLE_POLYFLAGS_DISABLED	= 0x10,		// Disabled polygon
+	SAMPLE_POLYFLAGS_WALK_STEEP = 0x08,
+	SAMPLE_POLYFLAGS_JUMP		= 0x10,		// Ability to jump.
+	SAMPLE_POLYFLAGS_DISABLED	= 0x20,		// Disabled polygon
 	SAMPLE_POLYFLAGS_ALL		= 0xffff	// All abilities.
 };
 
@@ -114,6 +116,7 @@ protected:
 	float m_agentRadius;
 	float m_agentMaxClimb;
 	float m_agentMaxSlope;
+	float m_agentMaxSlopeNotSteep;
 	float m_regionMinSize;
 	float m_regionMergeSize;
 	float m_edgeMaxLen;

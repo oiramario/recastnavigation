@@ -820,6 +820,7 @@ unsigned char* Sample_TileMesh::buildTileMesh(const int tx, const int ty, const 
 	m_cfg.cs = m_cellSize;
 	m_cfg.ch = m_cellHeight;
 	m_cfg.walkableSlopeAngle = m_agentMaxSlope;
+	m_cfg.walkableSlopeAngleNotSteep = m_agentMaxSlopeNotSteep;
 	m_cfg.walkableHeight = (int)ceilf(m_agentHeight / m_cfg.ch);
 	m_cfg.walkableClimb = (int)floorf(m_agentMaxClimb / m_cfg.ch);
 	m_cfg.walkableRadius = (int)ceilf(m_agentRadius / m_cfg.cs);
@@ -936,9 +937,20 @@ unsigned char* Sample_TileMesh::buildTileMesh(const int tx, const int ty, const 
 		
 		m_tileTriCount += nctris;
 		
-		memset(m_triareas, 0, nctris*sizeof(unsigned char));
-		rcMarkWalkableTriangles(m_ctx, m_cfg.walkableSlopeAngle,
-								verts, nverts, ctris, nctris, m_triareas);
+		if (m_cfg.walkableSlopeAngle > m_cfg.walkableSlopeAngleNotSteep)
+		{
+			memset(m_triareas, RC_WALKABLE_AREA_STEEP, nctris * sizeof(unsigned char));
+			rcClearUnwalkableTriangles(m_ctx, m_cfg.walkableSlopeAngle,
+				verts, nverts, ctris, nctris, m_triareas);
+			rcMarkWalkableTriangles(m_ctx, m_cfg.walkableSlopeAngleNotSteep,
+				verts, nverts, ctris, nctris, m_triareas);
+		}
+		else
+		{
+			memset(m_triareas, RC_WALKABLE_AREA, nctris * sizeof(unsigned char));
+			rcClearUnwalkableTriangles(m_ctx, m_cfg.walkableSlopeAngle,
+				verts, nverts, ctris, nctris, m_triareas);
+		}
 		
 		if (!rcRasterizeTriangles(m_ctx, verts, nverts, ctris, m_triareas, nctris, *m_solid, m_cfg.walkableClimb))
 			return 0;
@@ -1127,8 +1139,14 @@ unsigned char* Sample_TileMesh::buildTileMesh(const int tx, const int ty, const 
 		{
 			if (m_pmesh->areas[i] == RC_WALKABLE_AREA)
 				m_pmesh->areas[i] = SAMPLE_POLYAREA_GROUND;
+			else if (m_pmesh->areas[i] == RC_WALKABLE_AREA_STEEP)
+				m_pmesh->areas[i] = SAMPLE_POLYAREA_GROUND_STEEP;
 			
-			if (m_pmesh->areas[i] == SAMPLE_POLYAREA_GROUND ||
+			if (m_pmesh->areas[i] == SAMPLE_POLYAREA_GROUND_STEEP)
+			{
+				m_pmesh->flags[i] = SAMPLE_POLYFLAGS_WALK_STEEP;
+			}
+			else if (m_pmesh->areas[i] == SAMPLE_POLYAREA_GROUND ||
 				m_pmesh->areas[i] == SAMPLE_POLYAREA_GRASS ||
 				m_pmesh->areas[i] == SAMPLE_POLYAREA_ROAD)
 			{

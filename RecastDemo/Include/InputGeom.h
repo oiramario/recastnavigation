@@ -45,6 +45,7 @@ struct BuildSettings
 	float agentMaxClimb;
 	// Agent max slope in degrees
 	float agentMaxSlope;
+	float agentMaxSlopeNotSteep;
 	// Region minimum size in voxels.
 	// regionMinSize = sqrt(regionMinArea)
 	float regionMinSize;

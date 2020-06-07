@@ -39,6 +39,7 @@ unsigned int SampleDebugDraw::areaToCol(unsigned int area)
 {
 	switch(area)
 	{
+	case SAMPLE_POLYAREA_GROUND_STEEP: return duRGBA(0, 115, 153, 255);
 	// Ground (0) : light blue
 	case SAMPLE_POLYAREA_GROUND: return duRGBA(0, 192, 255, 255);
 	// Water : blue
@@ -137,6 +138,7 @@ void Sample::handleMeshChanged(InputGeom* geom)
 		m_agentRadius = buildSettings->agentRadius;
 		m_agentMaxClimb = buildSettings->agentMaxClimb;
 		m_agentMaxSlope = buildSettings->agentMaxSlope;
+		m_agentMaxSlopeNotSteep = buildSettings->agentMaxSlopeNotSteep;
 		m_regionMinSize = buildSettings->regionMinSize;
 		m_regionMergeSize = buildSettings->regionMergeSize;
 		m_edgeMaxLen = buildSettings->edgeMaxLen;
@@ -156,6 +158,7 @@ void Sample::collectSettings(BuildSettings& settings)
 	settings.agentRadius = m_agentRadius;
 	settings.agentMaxClimb = m_agentMaxClimb;
 	settings.agentMaxSlope = m_agentMaxSlope;
+	settings.agentMaxSlopeNotSteep = m_agentMaxSlopeNotSteep;
 	settings.regionMinSize = m_regionMinSize;
 	settings.regionMergeSize = m_regionMergeSize;
 	settings.edgeMaxLen = m_edgeMaxLen;
@@ -175,6 +178,7 @@ void Sample::resetCommonSettings()
 	m_agentRadius = 0.6f;
 	m_agentMaxClimb = 0.9f;
 	m_agentMaxSlope = 45.0f;
+	m_agentMaxSlopeNotSteep = 45.0f;
 	m_regionMinSize = 8;
 	m_regionMergeSize = 20;
 	m_edgeMaxLen = 12.0f;
@@ -199,6 +203,7 @@ void Sample::handleCommonSettings()
             m_agentRadius = 2 * m_cellSize;
             m_agentMaxClimb = 8 * m_cellSize;
             m_agentMaxSlope = 70.0f;
+			m_agentMaxSlopeNotSteep = 55.0f;
             m_regionMinSize = 60;
             m_regionMergeSize = 50;
             m_edgeMaxLen = 81.0f;
@@ -234,6 +239,7 @@ void Sample::handleCommonSettings()
 	imguiSlider("Radius", &m_agentRadius, 0.0f, 5.0f, 0.1f);
 	imguiSlider("Max Climb", &m_agentMaxClimb, 0.1f, 5.0f, 0.1f);
 	imguiSlider("Max Slope", &m_agentMaxSlope, 0.0f, 90.0f, 1.0f);
+	imguiSlider("Max Slope Not Steep", &m_agentMaxSlopeNotSteep, 0.0f, 90.0f, 1.0f);
 	
 	imguiSeparator();
 	imguiLabel("Region");

@@ -1218,6 +1218,7 @@ bool Sample_TempObstacles::handleBuild()
 	cfg.cs = m_cellSize;
 	cfg.ch = m_cellHeight;
 	cfg.walkableSlopeAngle = m_agentMaxSlope;
+	cfg.walkableSlopeAngleNotSteep = m_agentMaxSlopeNotSteep;
 	cfg.walkableHeight = (int)ceilf(m_agentHeight / cfg.ch);
 	cfg.walkableClimb = (int)floorf(m_agentMaxClimb / cfg.ch);
 	cfg.walkableRadius = (int)ceilf(m_agentRadius / cfg.cs);
