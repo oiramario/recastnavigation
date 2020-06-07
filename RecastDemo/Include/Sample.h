@@ -54,12 +54,13 @@ enum SamplePolyAreas
 };
 enum SamplePolyFlags
 {
-	SAMPLE_POLYFLAGS_WALK		= 0x01,		// Ability to walk (ground, grass, road)
-	SAMPLE_POLYFLAGS_SWIM		= 0x02,		// Ability to swim (water).
-	SAMPLE_POLYFLAGS_DOOR		= 0x04,		// Ability to move through doors.
-	SAMPLE_POLYFLAGS_WALK_STEEP = 0x08,
-	SAMPLE_POLYFLAGS_JUMP		= 0x10,		// Ability to jump.
-	SAMPLE_POLYFLAGS_DISABLED	= 0x20,		// Disabled polygon
+	SAMPLE_POLYFLAGS_WALK		= 0x02,		// Ability to walk (ground, grass, road)
+	SAMPLE_POLYFLAGS_SWIM		= 0x04,		// Ability to swim (water).
+	SAMPLE_POLYFLAGS_DOOR		= 0x10,		// Ability to move through doors.
+	SAMPLE_POLYFLAGS_JUMP		= 0x20,		// Ability to jump.
+	SAMPLE_POLYFLAGS_WALK_STEEP = 0x01,
+	SAMPLE_POLYFLAGS_MAGMA_SLIME = 0x08,
+	SAMPLE_POLYFLAGS_DISABLED	= 0x40,		// Disabled polygon
 	SAMPLE_POLYFLAGS_ALL		= 0xffff	// All abilities.
 };
 
