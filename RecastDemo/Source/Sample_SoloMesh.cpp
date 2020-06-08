@@ -660,8 +660,6 @@ bool Sample_SoloMesh::handleBuild()
 		{
 			if (m_pmesh->areas[i] == RC_WALKABLE_AREA)
 				m_pmesh->areas[i] = SAMPLE_POLYAREA_GROUND;
-			else if (m_pmesh->areas[i] == RC_WALKABLE_AREA_STEEP)
-				m_pmesh->areas[i] = SAMPLE_POLYAREA_GROUND_STEEP;
 				
 			if (m_pmesh->areas[i] == SAMPLE_POLYAREA_GROUND_STEEP)
 			{

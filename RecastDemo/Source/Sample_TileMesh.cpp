@@ -939,15 +939,15 @@ unsigned char* Sample_TileMesh::buildTileMesh(const int tx, const int ty, const 
 		
 		if (m_cfg.walkableSlopeAngle > m_cfg.walkableSlopeAngleNotSteep)
 		{
-			memset(m_triareas, RC_WALKABLE_AREA_STEEP, nctris * sizeof(unsigned char));
+			memset(m_triareas, SAMPLE_POLYAREA_GROUND_STEEP, nctris * sizeof(unsigned char));
 			rcClearUnwalkableTriangles(m_ctx, m_cfg.walkableSlopeAngle,
 				verts, nverts, ctris, nctris, m_triareas);
 			rcMarkWalkableTriangles(m_ctx, m_cfg.walkableSlopeAngleNotSteep,
-				verts, nverts, ctris, nctris, m_triareas);
+				verts, nverts, ctris, nctris, m_triareas, SAMPLE_POLYAREA_GROUND);
 		}
 		else
 		{
-			memset(m_triareas, RC_WALKABLE_AREA, nctris * sizeof(unsigned char));
+			memset(m_triareas, SAMPLE_POLYAREA_GROUND, nctris * sizeof(unsigned char));
 			rcClearUnwalkableTriangles(m_ctx, m_cfg.walkableSlopeAngle,
 				verts, nverts, ctris, nctris, m_triareas);
 		}
@@ -1139,8 +1139,6 @@ unsigned char* Sample_TileMesh::buildTileMesh(const int tx, const int ty, const 
 		{
 			if (m_pmesh->areas[i] == RC_WALKABLE_AREA)
 				m_pmesh->areas[i] = SAMPLE_POLYAREA_GROUND;
-			else if (m_pmesh->areas[i] == RC_WALKABLE_AREA_STEEP)
-				m_pmesh->areas[i] = SAMPLE_POLYAREA_GROUND_STEEP;
 			
 			if (m_pmesh->areas[i] == SAMPLE_POLYAREA_GROUND_STEEP)
 			{
