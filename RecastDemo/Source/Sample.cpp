@@ -202,7 +202,7 @@ void Sample::handleCommonSettings()
             m_agentHeight = 6 * m_cellSize;
             m_agentRadius = 2 * m_cellSize;
             m_agentMaxClimb = 8 * m_cellSize;
-            m_agentMaxSlope = 70.0f;
+            m_agentMaxSlope = 85.0f;
 			m_agentMaxSlopeNotSteep = 55.0f;
             m_regionMinSize = 60;
             m_regionMergeSize = 50;
@@ -212,6 +212,7 @@ void Sample::handleCommonSettings()
             m_detailSampleDist = 16;
             m_detailSampleMaxError = 1.0f;
             m_partitionType = SAMPLE_PARTITION_WATERSHED;
+			m_filterLedgeSpans = false;
         }
         else
             resetCommonSettings();
