@@ -54,8 +54,8 @@ enum SamplePolyAreas
 };
 enum SamplePolyFlags
 {
-	SAMPLE_POLYFLAGS_WALK_STEEP = 0x01,
-	SAMPLE_POLYFLAGS_WALK		= 0x02,		// Ability to walk (ground, grass, road)
+	SAMPLE_POLYFLAGS_WALK		= 0x01,		// Ability to walk (ground, grass, road)
+	SAMPLE_POLYFLAGS_WALK_STEEP = 0x02,
 	SAMPLE_POLYFLAGS_SWIM		= 0x04,		// Ability to swim (water).
 	SAMPLE_POLYFLAGS_MAGMA_SLIME = 0x08,
 	SAMPLE_POLYFLAGS_DOOR		= 0x10,		// Ability to move through doors.
@@ -131,6 +131,8 @@ protected:
 	bool m_filterLedgeSpans;
 	bool m_filterWalkableLowHeightSpans;
     bool m_trinityCoreValues;
+	float m_stepSize;
+	float m_slop;
 	
 	SampleTool* m_tool;
 	SampleToolState* m_toolStates[MAX_TOOLS];
@@ -177,6 +179,8 @@ public:
 	virtual float getAgentHeight() { return m_agentHeight; }
 	virtual float getAgentClimb() { return m_agentMaxClimb; }
     virtual bool getTrinityCoreValues() { return m_trinityCoreValues; }
+	virtual float getStepSize() { return m_stepSize; }
+	virtual float getSlop() { return m_slop; }
 	
 	unsigned char getNavMeshDrawFlags() const { return m_navMeshDrawFlags; }
 	void setNavMeshDrawFlags(unsigned char flags) { m_navMeshDrawFlags = flags; }

@@ -529,8 +529,8 @@ void NavMeshTesterTool::handleToggle()
 	if (!m_sposSet || !m_eposSet || !m_startRef || !m_endRef)
 		return;
 		
-	static const float STEP_SIZE = 0.5f;
-	static const float SLOP = 0.01f;
+	const float STEP_SIZE = m_sample->getStepSize();
+	const float SLOP = m_sample->getSlop();
 
 	if (m_pathIterNum == 0)
 	{
@@ -756,8 +756,8 @@ void NavMeshTesterTool::recalc()
 				m_navQuery->closestPointOnPoly(m_startRef, m_spos, iterPos, 0);
 				m_navQuery->closestPointOnPoly(polys[npolys-1], m_epos, targetPos, 0);
 				
-				static const float STEP_SIZE = 4.0f;
-				static const float SLOP = 0.01f;
+				const float STEP_SIZE = m_sample->getStepSize();
+				const float SLOP = m_sample->getSlop();
 				
 				m_nsmoothPath = 0;
 				

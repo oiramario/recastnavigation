@@ -188,6 +188,8 @@ void Sample::resetCommonSettings()
 	m_detailSampleMaxError = 1.0f;
 	m_partitionType = SAMPLE_PARTITION_WATERSHED;
     m_trinityCoreValues = false;
+	m_stepSize = 0.5f;
+	m_slop = 0.01f;
 }
 
 void Sample::handleCommonSettings()
@@ -213,6 +215,8 @@ void Sample::handleCommonSettings()
             m_detailSampleMaxError = 1.0f;
             m_partitionType = SAMPLE_PARTITION_WATERSHED;
 			m_filterLedgeSpans = true;
+			m_stepSize = 4.0f;
+			m_slop = 0.3f;
         }
         else
             resetCommonSettings();
