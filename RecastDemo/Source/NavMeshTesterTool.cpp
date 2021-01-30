@@ -1420,11 +1420,17 @@ void NavMeshTesterTool::handleRenderOverlay(double* proj, double* model, int* vi
 								model, proj, view, &x, &y, &z))
 	{
 		imguiDrawText((int)x, (int)(y-25), IMGUI_ALIGN_CENTER, "Start", imguiRGBA(0,0,0,220));
+		char start[64];
+		snprintf(start, sizeof(start), "%f %f %f", m_spos[2], m_spos[0], m_spos[1]);
+		imguiDrawText((int)x, (int)(y-50), IMGUI_ALIGN_CENTER, start, imguiRGBA(0,0,0,220));
 	}
 	if (m_eposSet && gluProject((GLdouble)m_epos[0], (GLdouble)m_epos[1], (GLdouble)m_epos[2],
 								model, proj, view, &x, &y, &z))
 	{
 		imguiDrawText((int)x, (int)(y-25), IMGUI_ALIGN_CENTER, "End", imguiRGBA(0,0,0,220));
+		char end[64];
+		snprintf(end, sizeof(end), "%f %f %f", m_epos[2], m_epos[0], m_epos[1]);
+		imguiDrawText((int)x, (int)(y-50), IMGUI_ALIGN_CENTER, end, imguiRGBA(0,0,0,220));
 	}
 	
 	// Tool help
