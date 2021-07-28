@@ -746,6 +746,9 @@ int main(int /*argc*/, char** /*argv*/)
 					logScroll = 0;
 					ctx.dumpLog("Geom load log %s:", meshName.c_str());
 				}
+
+				SDL_SetWindowTitle(window, meshName.c_str());
+
 				if (sample && geom)
 				{
 					sample->handleMeshChanged(geom);
