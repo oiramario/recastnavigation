@@ -192,6 +192,8 @@ public:
 	void renderOverlayToolStates(double* proj, double* model, int* view);
 
 	void resetCommonSettings();
+	void disableTCSettings();
+	void enableTCSettings();
 	void handleCommonSettings();
 
 private:

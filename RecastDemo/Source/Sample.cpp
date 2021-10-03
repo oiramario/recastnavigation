@@ -62,10 +62,11 @@ Sample::Sample() :
 	m_navMesh(0),
 	m_navQuery(0),
 	m_crowd(0),
-	m_navMeshDrawFlags(DU_DRAWNAVMESH_OFFMESHCONS|DU_DRAWNAVMESH_CLOSEDLIST),
+	m_navMeshDrawFlags(DU_DRAWNAVMESH_OFFMESHCONS | DU_DRAWNAVMESH_CLOSEDLIST),
 	m_filterLowHangingObstacles(true),
 	m_filterLedgeSpans(true),
 	m_filterWalkableLowHeightSpans(true),
+	m_trinityCoreValues(true),
 	m_tool(0),
 	m_ctx(0)
 {
@@ -169,8 +170,15 @@ void Sample::collectSettings(BuildSettings& settings)
 	settings.partitionType = m_partitionType;
 }
 
-
 void Sample::resetCommonSettings()
+{
+	if (m_trinityCoreValues)
+		enableTCSettings();
+	else
+		disableTCSettings();
+}
+
+void Sample::disableTCSettings()
 {
 	m_cellSize = 0.3f;
 	m_cellHeight = 0.2f;
@@ -192,34 +200,34 @@ void Sample::resetCommonSettings()
 	m_slop = 0.01f;
 }
 
+void Sample::enableTCSettings()
+{
+	m_cellSize = 0.2666666f;
+	m_cellHeight = 0.2666666f;
+	m_agentHeight = 6 * m_cellSize;
+	m_agentRadius = 2 * m_cellSize;
+	m_agentMaxClimb = 6 * m_cellSize;
+	m_agentMaxSlope = 55.0f;
+	m_agentMaxSlopeNotSteep = 55.0f;
+	m_regionMinSize = 60;
+	m_regionMergeSize = 50;
+	m_edgeMaxLen = 81.0f;
+	m_edgeMaxError = 1.8f;
+	m_vertsPerPoly = 6.0f;
+	m_detailSampleDist = 16;
+	m_detailSampleMaxError = 1.0f;
+	m_partitionType = SAMPLE_PARTITION_WATERSHED;
+	m_filterLedgeSpans = true;
+	m_stepSize = 4.0f;
+	m_slop = 0.3f;
+}
+
 void Sample::handleCommonSettings()
 {
     if (imguiCheck("TrinityCore Configs", m_trinityCoreValues))
     {
         m_trinityCoreValues = !m_trinityCoreValues;
-        if (m_trinityCoreValues)
-        {
-            m_cellSize = 0.2666666f;
-            m_cellHeight = 0.2666666f;
-            m_agentHeight = 6 * m_cellSize;
-            m_agentRadius = 2 * m_cellSize;
-            m_agentMaxClimb = 6 * m_cellSize;
-            m_agentMaxSlope = 55.0f;
-			m_agentMaxSlopeNotSteep = 55.0f;
-            m_regionMinSize = 60;
-            m_regionMergeSize = 50;
-            m_edgeMaxLen = 81.0f;
-            m_edgeMaxError = 1.8f;
-            m_vertsPerPoly = 6.0f;
-            m_detailSampleDist = 16;
-            m_detailSampleMaxError = 1.0f;
-            m_partitionType = SAMPLE_PARTITION_WATERSHED;
-			m_filterLedgeSpans = true;
-			m_stepSize = 4.0f;
-			m_slop = 0.3f;
-        }
-        else
-            resetCommonSettings();
+		resetCommonSettings();
         m_ctx->log(RC_LOG_WARNING, "Reload the mesh to update the Bounding Box");
     }
 
