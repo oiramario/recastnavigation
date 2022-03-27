@@ -150,12 +150,17 @@ bool InputGeom::loadMesh(rcContext* ctx, const std::string& filepath, bool trini
 
     if (trinityCoreSettings)
     {
-        char charBuff[3];
+        int mapIdStart = strlen("Meshes/map");
+        int mapIdEnd = filepath.length() - 3 /*extension*/ - 1 /*dot*/ - 4 /*XXYY coords*/;
+        char charBuff[5];
         memset(charBuff, 0, sizeof(charBuff));
-        memcpy(charBuff, &filepath[13], sizeof(char) * 2);
+        std::copy(&filepath[mapIdStart], &filepath[mapIdEnd], &charBuff[0]);
+
+        memset(charBuff, 0, sizeof(charBuff));
+        std::copy_n(&filepath[mapIdEnd], sizeof(char) * 2, &charBuff[0]);
         int tileY = atoi(charBuff);
         memset(charBuff, 0, sizeof(charBuff));
-        memcpy(charBuff, &filepath[15], sizeof(char) * 2);
+        std::copy_n(&filepath[mapIdEnd + 2], sizeof(char) * 2, &charBuff[0]);
         int tileX = atoi(charBuff);
 
         // this is for width and depth

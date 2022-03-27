@@ -379,7 +379,7 @@ int main(int /*argc*/, char** /*argv*/)
 				{
 					float pos[3];
 					pos[0] = rayStart[0] + (rayEnd[0] - rayStart[0]) * hitTime;
-					pos[1] = rayStart[1] + (rayEnd[1] - rayStart[1]) * hitTime;
+					pos[1] = rayStart[1] + (rayEnd[1] - rayStart[1]) * hitTime + 0.5f;
 					pos[2] = rayStart[2] + (rayEnd[2] - rayStart[2]) * hitTime;
 					sample->handleClick(rayStart, pos, processHitTestShift);
 				}
@@ -607,7 +607,7 @@ int main(int /*argc*/, char** /*argv*/)
                         showLog = true;
                         logScroll = 0;
                     }
-                    ctx.dumpLog("Load log %s:", meshName);
+                    ctx.dumpLog("Load log %s:", meshName.c_str());
 
                     // Clear test.
                     delete test;
@@ -622,7 +622,7 @@ int main(int /*argc*/, char** /*argv*/)
                         showLog = true;
                         logScroll = 0;
                     }
-                    ctx.dumpLog("Load log %s:", meshName);
+                    ctx.dumpLog("Load log %s:", meshName.c_str());
 
                     // Clear test.
                     delete test;
