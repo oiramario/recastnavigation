@@ -1,3 +1,9 @@
+set(CMAKE_CXX_STANDARD 17)
+
+if(MSVC)
+    add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
+endif()
+
 file(GLOB SOURCES Source/*.cpp Contrib/fastlz/fastlz.c)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)

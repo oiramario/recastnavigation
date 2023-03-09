@@ -42,6 +42,9 @@
 #include "ConvexVolumeTool.h"
 #include "CrowdTool.h"
 
+#include <filesystem>
+namespace fs = std::filesystem;
+
 
 #ifdef WIN32
 #	define snprintf _snprintf
@@ -1224,93 +1227,76 @@ bool Sample_TileMesh::handleLoad()
     cleanup();
 
     const std::string& meshFilePath = m_geom->getMesh()->getFileName();
-    int mapIdStart = strlen("Meshes/map");
-    int mapIdEnd = meshFilePath.length() - 3 /*extension*/ - 1 /*dot*/ - 4 /*XXYY coords*/;
-    int mapIdLength = mapIdEnd - mapIdStart;
-    char charBuff[5];
-    memset(charBuff, 0, sizeof(charBuff));
-    std::copy(&meshFilePath[mapIdStart], &meshFilePath[mapIdEnd], &charBuff[0]);
-    int mapId = atoi(charBuff);
+    size_t mapIdStart = strlen("Meshes/map");
+	std::string mapId = meshFilePath.substr(mapIdStart, 3);
+    char mmapName[256];
     // load and init dtNavMesh - read parameters from file
-    int pathLen = strlen("Meshes/.mmap") + 1 + mapIdLength;
-    char *fileName = new char[pathLen];
-    snprintf(fileName, pathLen, "Meshes/%0*i.mmap", mapIdLength, mapId);
-    FILE* file = fopen(fileName, "rb");
+    sprintf(mmapName, "Meshes/%s.mmap", mapId.c_str());
+    FILE* file = fopen(mmapName, "rb");
     if (!file)
     {
-        delete[] fileName;
         return false;
     }
     dtNavMeshParams params;
-    int count = fread(&params, sizeof(dtNavMeshParams), 1, file);
+    size_t count = fread(&params, sizeof(dtNavMeshParams), 1, file);
     fclose(file);
     if (count != 1)
     {
-        delete[] fileName;
         return false;
     }
     dtNavMesh* mesh = dtAllocNavMesh();
     if (dtStatusFailed(mesh->init(&params)))
     {
         dtFreeNavMesh(mesh);
-        delete[] fileName;
         return false;
     }
-    delete[] fileName;
 
-    memset(charBuff, 0, sizeof(charBuff));
-    std::copy_n(&meshFilePath[mapIdEnd], sizeof(char) * 2, &charBuff[0]);
-    int x = atoi(charBuff);
-    memset(charBuff, 0, sizeof(charBuff));
-    std::copy_n(&meshFilePath[mapIdEnd + 2], sizeof(char) * 2, &charBuff[0]);
-    int y = atoi(charBuff);
+	std::string tileId = meshFilePath.substr(mapIdStart, 7);
+	for (auto& entry : fs::directory_iterator("Meshes/"))
+	{
+		auto path = entry.path();
+		auto extension = path.extension();
+		if (extension == ".mmtile")
+		{
+			auto filename = path.filename().string().substr(0, 7);
+			if (filename == tileId)
+			{
+				file = fopen(path.string().c_str(), "rb");
+				if (!file)
+				{
+					continue;
+				}
 
-    for (int row = -1; row <= 1; row++)
-    {
-        for (int col = -1; col <= 1; col++)
-        {
-            // load this tile :: Meshes/MMMXXYY.mmtile
-            pathLen = strlen("Meshes/XXYY.mmtile") + 1 + mapIdLength;
-            fileName = new char[pathLen];
-            snprintf(fileName, pathLen, "Meshes/%0*i%02i%02i.mmtile", mapIdLength, mapId, x + row, y + col);
+				// read header
+				MmapTileHeader fileHeader;
+				if (fread(&fileHeader, sizeof(MmapTileHeader), 1, file) != 1 || fileHeader.mmapMagic != MMAP_MAGIC)
+				{
+					fclose(file);
+					continue;
+				}
 
-            file = fopen(fileName, "rb");
-            if (!file)
-            {
-                delete[] fileName;
-                continue;
-            }
-            delete[] fileName;
+				unsigned char* data = (unsigned char*)dtAlloc(fileHeader.size, DT_ALLOC_PERM);
 
-            // read header
-            MmapTileHeader fileHeader;
-            if (fread(&fileHeader, sizeof(MmapTileHeader), 1, file) != 1 || fileHeader.mmapMagic != MMAP_MAGIC)
-            {
-                fclose(file);
-                continue;
-            }
+				size_t result = fread(data, fileHeader.size, 1, file);
+				if (!result)
+				{
+					fclose(file);
+					continue;
+				}
 
-            unsigned char* data = (unsigned char*)dtAlloc(fileHeader.size, DT_ALLOC_PERM);
+				fclose(file);
 
-            size_t result = fread(data, fileHeader.size, 1, file);
-            if (!result)
-            {
-                fclose(file);
-                continue;
-            }
+				dtTileRef tileRef = 0;
 
-            fclose(file);
-
-            dtTileRef tileRef = 0;
-
-            // memory allocated for data is now managed by detour, and will be deallocated when the tile is removed
-            if (!dtStatusSucceed(mesh->addTile(data, fileHeader.size, DT_TILE_FREE_DATA, 0, &tileRef)))
-            {
-                dtFree(data);
-                return false;
-            }
-        }
-    }
+				// memory allocated for data is now managed by detour, and will be deallocated when the tile is removed
+				if (!dtStatusSucceed(mesh->addTile(data, fileHeader.size, DT_TILE_FREE_DATA, 0, &tileRef)))
+				{
+					dtFree(data);
+					return false;
+				}
+			}
+		}
+	}
 
     m_navMesh = mesh;
     dtStatus status = m_navQuery->init(m_navMesh, 2048);
@@ -1338,100 +1324,75 @@ bool Sample_TileMesh::handleLoadSubTiles()
     cleanup();
 
     const std::string& meshFilePath = m_geom->getMesh()->getFileName();
-    int mapIdStart = strlen("Meshes/map");
-    int mapIdEnd = meshFilePath.length() - 3 /*extension*/ - 1 /*dot*/ - 4 /*XXYY coords*/;
-    int mapIdLength = mapIdEnd - mapIdStart;
-    char charBuff[5];
-    memset(charBuff, 0, sizeof(charBuff));
-    std::copy(&meshFilePath[mapIdStart], &meshFilePath[mapIdEnd], &charBuff[0]);
-    int mapId = atoi(charBuff);
+    size_t mapIdStart = strlen("Meshes/map");
+	std::string mapId = meshFilePath.substr(mapIdStart, 3);
+    char mmapName[256];
     // load and init dtNavMesh - read parameters from file
-    int pathLen = strlen("Meshes/.mmap") + 1 + mapIdLength;
-    char *fileName = new char[pathLen];
-    snprintf(fileName, pathLen, "Meshes/%0*i.mmap", mapIdLength, mapId);
-    FILE* file = fopen(fileName, "rb");
+    sprintf(mmapName, "Meshes/%s.mmap", mapId.c_str());
+    FILE* file = fopen(mmapName, "rb");
     if (!file)
     {
-        delete[] fileName;
         return false;
     }
     dtNavMeshParams params;
-    int count = fread(&params, sizeof(dtNavMeshParams), 1, file);
+    size_t count = fread(&params, sizeof(dtNavMeshParams), 1, file);
     fclose(file);
     if (count != 1)
     {
-        delete[] fileName;
         return false;
     }
-    params.maxTiles = 25 * 25 * 9;
-
     dtNavMesh* mesh = dtAllocNavMesh();
     if (dtStatusFailed(mesh->init(&params)))
     {
         dtFreeNavMesh(mesh);
-        delete[] fileName;
         return false;
     }
-    delete[] fileName;
 
-    memset(charBuff, 0, sizeof(charBuff));
-    std::copy_n(&meshFilePath[mapIdEnd], sizeof(char) * 2, &charBuff[0]);
-    int x = atoi(charBuff);
-    memset(charBuff, 0, sizeof(charBuff));
-    std::copy_n(&meshFilePath[mapIdEnd + 2], sizeof(char) * 2, &charBuff[0]);
-    int y = atoi(charBuff);
+	for (auto& entry : fs::directory_iterator("Meshes/"))
+	{
+		auto path = entry.path();
+		auto extension = path.extension();
+		if (extension == ".mmtile")
+		{
+			auto filename = path.filename().string();
+			if (filename.find_first_of(mapId) == 0)
+			{
+				file = fopen(path.string().c_str(), "rb");
+				if (!file)
+				{
+					continue;
+				}
 
-    for (int subRow = 0; subRow < 25; subRow++)
-    {
-        for (int subCol = 0; subCol < 25; subCol++)
-        {
-            // load this tile :: Meshes/MMMXXYY.mmtile
-            pathLen = strlen("Meshes/XXYY_____XXYY.mmtile") + 1 + mapIdLength;
-            fileName = new char[pathLen];
-            snprintf(fileName, pathLen, "Meshes/%0*i%02i%02i_____%02i%02i.mmtile", mapIdLength, mapId, x, y, subRow, subCol);
+				// read header
+				MmapTileHeader fileHeader;
+				if (fread(&fileHeader, sizeof(MmapTileHeader), 1, file) != 1 || fileHeader.mmapMagic != MMAP_MAGIC)
+				{
+					fclose(file);
+					continue;
+				}
 
-            file = fopen(fileName, "rb");
-            if (!file)
-            {
-                delete[] fileName;
-                continue;
-            }
-            delete[] fileName;
+				unsigned char* data = (unsigned char*)dtAlloc(fileHeader.size, DT_ALLOC_PERM);
 
-            // read header
-            MmapTileHeader fileHeader;
-            if (fread(&fileHeader, sizeof(MmapTileHeader), 1, file) != 1 || fileHeader.mmapMagic != MMAP_MAGIC)
-            {
-                fclose(file);
-                continue;
-            }
+				size_t result = fread(data, fileHeader.size, 1, file);
+				if (!result)
+				{
+					fclose(file);
+					continue;
+				}
 
-            unsigned char* data = (unsigned char*)dtAlloc(fileHeader.size, DT_ALLOC_PERM);
+				fclose(file);
 
-            size_t result = fread(data, fileHeader.size, 1, file);
-            if (!result)
-            {
-                fclose(file);
-                continue;
-            }
+				dtTileRef tileRef = 0;
 
-            // Fix x/y
-            dtMeshHeader* header = (dtMeshHeader*)data;
-            header->x = header->x * 25 + subRow;
-            header->y = header->y * 25 + subCol;
-
-            fclose(file);
-
-            dtTileRef tileRef = 0;
-
-            // memory allocated for data is now managed by detour, and will be deallocated when the tile is removed
-            if (!dtStatusSucceed(mesh->addTile(data, fileHeader.size, DT_TILE_FREE_DATA, 0, &tileRef)))
-            {
-                dtFree(data);
-                continue;
-            }
-        }
-    }
+				// memory allocated for data is now managed by detour, and will be deallocated when the tile is removed
+				if (!dtStatusSucceed(mesh->addTile(data, fileHeader.size, DT_TILE_FREE_DATA, 0, &tileRef)))
+				{
+					dtFree(data);
+					return false;
+				}
+			}
+		}
+	}
 
     m_navMesh = mesh;
     dtStatus status = m_navQuery->init(m_navMesh, 2048);
